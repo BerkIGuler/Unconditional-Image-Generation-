@@ -91,10 +91,11 @@ if __name__ == "__main__":
             model = UNet2DModel.from_pretrained(train_config.cfg["PRETRAINED_MODEL"])
 
         noise_scheduler = DDPMScheduler(
-            num_train_timesteps=train_config.cfg["TRAIN_TIMESTEPS"])
+            num_train_timesteps=train_config.cfg["TRAIN_TIMESTEPS"]
+        )
         optimizer = torch.optim.AdamW(
-            model.parameters(), lr=train_config.cfg["LEARNING_RATE"])
-
+            model.parameters(), lr=train_config.cfg["LEARNING_RATE"]
+        )
         lr_scheduler = get_cosine_schedule_with_warmup(
             optimizer=optimizer,
             num_warmup_steps=train_config.cfg["LR_WARMUP_STEPS"],
@@ -102,4 +103,5 @@ if __name__ == "__main__":
         )
         train_loop(
             output_dir, model, noise_scheduler,
-            optimizer, train_dataloader, lr_scheduler)
+            optimizer, train_dataloader, lr_scheduler
+        )
