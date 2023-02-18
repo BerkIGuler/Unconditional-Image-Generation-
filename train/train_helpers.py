@@ -76,13 +76,17 @@ def train_loop(out_dir, mdl, noise_sch, optim, train_loader, lr_sch):
             global_step += 1
 
             # After each epoch sample some demo images with and save the model
-            if (global_step % train_config.cfg["SAVE_IMAGE_STEPS"] == 0 or
-                    global_step == train_config.cfg["TRAINING_STEPS"]):
+            if global_step % train_config.cfg["SAVE_IMAGE_STEPS"] == 0:
                 pipeline = DDPMPipeline(
                     unet=mdl,
                     scheduler=noise_sch)
                 evaluate(out_dir, epoch, pipeline, device)
-                pipeline.save_pretrained(out_dir)
+
+            if global_step % train_config.cfg["SAVE_MODEL_STEPS"] == 0:
+                models_dir = os.path.join(out_dir, "models")
+                os.makedirs(models_dir, exist_ok=True)
+                current_model_dir = os.path.join(models_dir, f"model_{global_step}")
+                pipeline.save_pretrained(current_model_dir)
 
             if global_step == train_config.cfg["TRAINING_STEPS"]:
                 break
