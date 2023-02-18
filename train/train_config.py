@@ -4,10 +4,6 @@ import argparse
 cfg = dict()
 
 # fixed args
-cfg["PUSH_TO_HUB"] = False
-cfg["MIXED_PRECISION"] = 'fp16'  # `no` for float32, `fp16` for automatic mixed precision
-cfg["OVERWRITE_OUTPUT_DIR"] = True  # overwrite the old model
-cfg["SEED"] = 0
 cfg["MAX_GRAD_NORM"] = 1.0
 
 
@@ -52,11 +48,6 @@ def parse_args():
                         default=0,
                         help="number of training_steps")
 
-    parser.add_argument("--grad_acc_step",
-                        type=int,
-                        required=True,
-                        help="gradient accumulation steps")
-
     parser.add_argument("--lr",
                         type=float,
                         required=True,
@@ -87,15 +78,20 @@ def parse_args():
                         default="None",
                         help="Pretrained model name from hf, if None train from scratch")
 
+    parser.add_argument("--gpu_id",
+                        type=int,
+                        required=True,
+                        help="gpu_id")
+
     args = parser.parse_args()
 
+    cfg["GPU_ID"] = args.gpu_id
     cfg["DATASET_PATH"] = args.dataset_path
     cfg["DATASET_NAME"] = args.dataset_name
     cfg["IMAGE_SIZE"] = args.im_size
     cfg["TRAIN_BATCH_SIZE"] = args.tbs
     cfg["EVAL_BATCH_SIZE"] = args.ebs
     cfg["TRAINING_STEPS"] = args.training_steps
-    cfg["GRADIENT_ACCUMULATION_STEPS"] = args.grad_acc_step
     cfg["LEARNING_RATE"] = args.lr
     cfg["LR_WARMUP_STEPS"] = args.lr_warmup_steps
     cfg["SAVE_IMAGE_STEPS"] = args.save_image_steps

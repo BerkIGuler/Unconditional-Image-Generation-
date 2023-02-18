@@ -2,8 +2,6 @@
 
 python3 train.py  --bs 2 \
                   --save_dir xxxxx \
-                  --dataset_name ISIC
-
                   --dataset_path /auto/data2/bguler/DDAN/ISIC_x_ddpm/train \
                   --dataset_name ISIC \
                   --im_size 256 \
