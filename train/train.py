@@ -25,6 +25,10 @@ if __name__ == "__main__":
     cwd = os.getcwd()
     parent_dir = os.path.dirname(cwd)
 
+    gpu_id = train_config.cfg["GPU_ID"]
+    device = torch.device(f"cuda:{gpu_id}") if \
+        torch.cuda.is_available() else torch.device("cpu")
+
     # training folder
     results_folder = os.path.join(parent_dir, train_config.cfg["DATASET_NAME"])
     os.makedirs(results_folder, exist_ok=True)
@@ -86,10 +90,9 @@ if __name__ == "__main__":
                     "UpBlock2D"
                 ),
             )
-
         else:
             model = UNet2DModel.from_pretrained(train_config.cfg["PRETRAINED_MODEL"])
-
+        model.to(device)
         noise_scheduler = DDPMScheduler(
             num_train_timesteps=train_config.cfg["TRAIN_TIMESTEPS"]
         )

@@ -1,7 +1,7 @@
 #!/bash/bin
 
 python3 train.py  --dataset_path /auto/data2/bguler/DDAN/breast_cancer/train \
-                  --dataset_name ISIC \
+                  --dataset_name breast_cancer \
                   --im_size 256 \
                   --tbs 4 \
                   --ebs 4 \
