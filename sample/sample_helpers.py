@@ -16,7 +16,7 @@ logger = get_global_logger(__name__, log_level=logging.INFO)
 
 
 def sample(pipe):
-    imgs = pipe(batch_size=5).images
+    imgs = pipe(batch_size=sample_config.cfg["BATCH_SIZE"]).images
     return imgs
 
 
@@ -27,7 +27,7 @@ def save_batch_to_disk(save_folder, ims, class_name, target_sample_size):
             save_folder, f"{class_name}_ddpm_{sample_counter}.jpg")
         im.save(im_name)
         sample_counter += 1
-        if target_sample_size >= len(os.listdir(save_folder)):
+        if target_sample_size <= len(os.listdir(save_folder)):
             return
 
 
