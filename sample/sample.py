@@ -1,3 +1,4 @@
+"""interface for main sampling workflow"""
 from sample_helpers import sample_dataset
 
 

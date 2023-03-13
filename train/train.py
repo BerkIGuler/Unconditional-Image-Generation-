@@ -1,3 +1,4 @@
+"""training setup for ddpm training"""
 from diffusers import UNet2DModel, DDPMScheduler
 from diffusers.optimization import get_cosine_schedule_with_warmup
 from datasets import load_dataset

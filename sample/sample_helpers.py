@@ -1,3 +1,4 @@
+"""ddpm sampling worklow"""
 import os
 from diffusers import DiffusionPipeline, DDIMScheduler
 import torch

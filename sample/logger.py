@@ -1,3 +1,4 @@
+"""setups logger"""
 import logging
 
 logging.root.setLevel(logging.NOTSET)

@@ -1,3 +1,4 @@
+"""ddpm sampling config"""
 import argparse
 
 

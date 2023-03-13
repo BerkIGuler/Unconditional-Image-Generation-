@@ -1,3 +1,4 @@
+"""Config for ddpm training"""
 import argparse
 
 # dict to store configuration details

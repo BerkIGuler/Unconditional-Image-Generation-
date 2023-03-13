@@ -1,3 +1,4 @@
+"""Calculate mean and std of breast cancer dataset"""
 from torchvision import transforms, datasets
 import torch
 from torch.utils.data import dataloader

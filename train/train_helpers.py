@@ -1,3 +1,4 @@
+"""main ddpm training workflow"""
 import logging
 from PIL import Image
 import torch
