@@ -13,9 +13,10 @@ import train_config
 
 # Create a custom logger
 logger = logging.getLogger(__name__)
+logger.root.setLevel(logging.NOTSET)
 # Create handler
-f_handler = logging.FileHandler('file.log')
-f_handler.setLevel(logging.DEBUG)
+f_handler = logging.FileHandler('./logs/train.log')
+f_handler.setLevel(logging.INFO)
 # Create formatters and add it to handler
 f_format = logging.Formatter("%(asctime)s - %(name)s - %(lineno)d -  %(message)s")
 f_handler.setFormatter(f_format)
@@ -34,10 +35,7 @@ def train_loop(out_dir, mdl, noise_sch, optim, train_loader, lr_sch):
 
     scaler = GradScaler()
     while global_step < train_config.cfg["TRAINING_STEPS"]:
-        epoch = global_step // len(train_loader)
         progress_bar = tqdm(total=train_config.cfg["TRAINING_STEPS"])
-        progress_bar.set_description(f"Epoch: {epoch}")
-
         for step, batch in enumerate(train_loader):
             optim.zero_grad()
             clean_images = batch['images'].to(device)
@@ -63,7 +61,7 @@ def train_loop(out_dir, mdl, noise_sch, optim, train_loader, lr_sch):
             # clips grad vector to MAX_GRAD_NORM
             torch.nn.utils.clip_grad_norm_(
                 mdl.parameters(), train_config.cfg["MAX_GRAD_NORM"],
-                norm_type=2.0, error_if_nonfinite=True)
+                norm_type=2.0, error_if_nonfinite=False)
             scaler.step(optim)
             lr_sch.step()
             scaler.update()
@@ -80,7 +78,7 @@ def train_loop(out_dir, mdl, noise_sch, optim, train_loader, lr_sch):
                 pipeline = DDPMPipeline(
                     unet=mdl,
                     scheduler=noise_sch)
-                evaluate(out_dir, epoch, pipeline, device)
+                evaluate(out_dir, global_step, pipeline, device)
 
             if global_step % train_config.cfg["SAVE_MODEL_STEPS"] == 0:
                 models_dir = os.path.join(out_dir, "models")
@@ -101,7 +99,7 @@ def make_grid(images, rows, cols):
     return grid
 
 
-def evaluate(out_dir, epoch, pipeline, device):
+def evaluate(out_dir, step, pipeline, device):
     # Sample some images from random noise
     # The default pipeline output type is `List[PIL.Image]`
     images = pipeline(
@@ -115,4 +113,4 @@ def evaluate(out_dir, epoch, pipeline, device):
     # Save the images
     test_dir = os.path.join(out_dir, "samples")
     os.makedirs(test_dir, exist_ok=True)
-    image_grid.save(f"{test_dir}/{epoch:04d}.png")
+    image_grid.save(f"{test_dir}/{step:04d}.png")

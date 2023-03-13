@@ -20,7 +20,6 @@ def transform(examples):
 
 if __name__ == "__main__":
 
-    # args from cl
     train_config.parse_args()
     cwd = os.getcwd()
     parent_dir = os.path.dirname(cwd)
@@ -32,16 +31,21 @@ if __name__ == "__main__":
     # training folder
     results_folder = os.path.join(parent_dir, train_config.cfg["DATASET_NAME"])
     os.makedirs(results_folder, exist_ok=True)
+    save_args_txt_path = os.path.join(results_folder, "args.txt")
+    with open(save_args_txt_path, "w") as fout:
+        fout.write(str(train_config.cfg))
 
     preprocess = transforms.Compose(
         [
             transforms.Resize((train_config.cfg["IMAGE_SIZE"], train_config.cfg["IMAGE_SIZE"])),
             transforms.RandomHorizontalFlip(),
+            transforms.RandomVerticalFlip(),
             transforms.ToTensor(),
-            transforms.Normalize([0.5], [0.5]),
+            # calculated for breast_cancer dataset train set
+            transforms.Normalize([0.3248, 0.3248, 0.3248], [0.2201, 0.2201, 0.2201]),
         ]
     )
-
+    # for each class
     for dr in os.listdir(train_config.cfg["DATASET_PATH"]):
         class_folder = os.path.join(train_config.cfg["DATASET_PATH"], dr)
         class_results_folder = os.path.join(results_folder, dr)
